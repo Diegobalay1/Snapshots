@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "74354022347",
+    "project_id": "snapshots-bfd2a",
+    "storage_bucket": "snapshots-bfd2a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:74354022347:android:c537cc469c0571d22e084e",
+        "android_client_info": {
+          "package_name": "com.diego.kotlin.snapshots"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "74354022347-a26nrd5fq2v3dcnctkff3bhirtvtd0bb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA7G61qOAq8LZLh_anfQz6T64flTB7J_8M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "74354022347-a26nrd5fq2v3dcnctkff3bhirtvtd0bb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
