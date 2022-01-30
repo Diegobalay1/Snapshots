@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -21,7 +22,9 @@ import com.google.firebase.database.FirebaseDatabase
 class HomeFragment : Fragment() {
 
     private lateinit var mBinding: FragmentHomeBinding
+
     private lateinit var mFirebaseAdapter: FirebaseRecyclerAdapter<Snapshot, SnapshotHolder>
+    private lateinit var mLayoutManager: RecyclerView.LayoutManager
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,7 +38,9 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val query = FirebaseDatabase.getInstance().reference.child("snapshots")
+        val query = FirebaseDatabase.getInstance("https://snapshots-bfd2a-default-rtdb.europe-west1.firebasedatabase.app")
+                    .reference.child("snapshots")
+        //FirebaseDatabase.getInstance("https://snapshots-bfd2a-default-rtdb.europe-west1.firebasedatabase.app")
 
         val options = FirebaseRecyclerOptions.Builder<Snapshot>()
             .setQuery(query, Snapshot::class.java).build()
@@ -76,7 +81,25 @@ class HomeFragment : Fragment() {
                 Toast.makeText(mContext, error.message, Toast.LENGTH_SHORT).show()
             }
 
+        }//end adapter
+
+        mLayoutManager = LinearLayoutManager(context)
+        mBinding.recyclerView.apply {
+            setHasFixedSize(true)
+            layoutManager = mLayoutManager
+            adapter = mFirebaseAdapter
         }
+
+    }
+
+    override fun onStart() {
+        super.onStart()
+        mFirebaseAdapter.startListening()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        mFirebaseAdapter.stopListening()
     }
 
     inner class SnapshotHolder(view: View) : RecyclerView.ViewHolder(view) {
