@@ -100,6 +100,7 @@ class HomeFragment : Fragment() {
     override fun onStop() {
         super.onStop()
         mFirebaseAdapter.stopListening()
+        mFirebaseAdapter.notifyDataSetChanged()
     }
 
     inner class SnapshotHolder(view: View) : RecyclerView.ViewHolder(view) {
