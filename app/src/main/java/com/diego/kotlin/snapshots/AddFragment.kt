@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import com.diego.kotlin.snapshots.databinding.FragmentAddBinding
 import com.google.android.material.snackbar.Snackbar
@@ -68,6 +67,9 @@ class AddFragment : Fragment() {
 
     private fun postSnapshot() {
         mBinding.progressBar.visibility = View.VISIBLE
+
+        val key = mDatabaseReference.push().key!! //generamos nodo y extraemos su llave
+
         //mStorageReference.child(PATH_SNAPSHOT).child("my_photo")
         val storageReference = mStorageReference.child(PATH_SNAPSHOT).child("my_photo")
         if (mPhotoSelectedUri != null) {
@@ -84,6 +86,11 @@ class AddFragment : Fragment() {
                 .addOnSuccessListener {
                     Snackbar.make(mBinding.root, "Instantánea publicada.",
                         Snackbar.LENGTH_SHORT).show()
+                    it.storage.downloadUrl.addOnSuccessListener {
+                        saveSnapshot(key, it.toString(), mBinding.etTitle.text.toString().trim())
+                        mBinding.tilTitle.visibility = View.GONE
+                        mBinding.tvMessage.text = getString(R.string.post_message_title)
+                    }
                 }
                     //si fracasa la subida
                 .addOnFailureListener {
@@ -94,8 +101,9 @@ class AddFragment : Fragment() {
 
     }
 
-    private fun saveSnapshot(){
-
+    private fun saveSnapshot(key: String, url: String, title: String){
+        val snapshot = Snapshot(title = title, photoUrl = url)
+        mDatabaseReference.child(key).setValue(snapshot)
     }
 
     /*override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
