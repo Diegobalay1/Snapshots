@@ -12,13 +12,20 @@ import android.view.ViewGroup
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import com.diego.kotlin.snapshots.databinding.FragmentAddBinding
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 
 
 class AddFragment : Fragment() {
 
     private val RC_GALLERY = 18 //Request Code RC
+    private val PATH_SNAPSHOT = "snapshots"
 
     private lateinit var mBinding: FragmentAddBinding
+    private lateinit var mStorageReference: StorageReference
+    private lateinit var mDatabaseReference: DatabaseReference
 
     private var mPhotoSelectedUri: Uri? = null
 
@@ -39,6 +46,9 @@ class AddFragment : Fragment() {
         }
 
         mBinding.btnSelect.setOnClickListener { openGallery() }
+
+        mStorageReference = FirebaseStorage.getInstance().reference
+        mDatabaseReference = FirebaseDatabase.getInstance().reference.child(PATH_SNAPSHOT)
     }
 
     private fun openGallery() {
@@ -56,6 +66,10 @@ class AddFragment : Fragment() {
     }
 
     private fun postSnapshot() {
+
+    }
+
+    private fun saveSnapshot(){
 
     }
 
