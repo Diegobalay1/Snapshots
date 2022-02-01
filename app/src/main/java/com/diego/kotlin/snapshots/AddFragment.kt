@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import com.diego.kotlin.snapshots.databinding.FragmentAddBinding
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
@@ -48,7 +49,7 @@ class AddFragment : Fragment() {
         mBinding.btnSelect.setOnClickListener { openGallery() }
 
         mStorageReference = FirebaseStorage.getInstance().reference
-        mDatabaseReference = FirebaseDatabase.getInstance().reference.child(PATH_SNAPSHOT)
+        mDatabaseReference = FirebaseDatabase.getInstance("https://snapshots-bfd2a-default-rtdb.europe-west1.firebasedatabase.app").reference.child(PATH_SNAPSHOT)
     }
 
     private fun openGallery() {
@@ -66,6 +67,30 @@ class AddFragment : Fragment() {
     }
 
     private fun postSnapshot() {
+        mBinding.progressBar.visibility = View.VISIBLE
+        //mStorageReference.child(PATH_SNAPSHOT).child("my_photo")
+        val storageReference = mStorageReference.child(PATH_SNAPSHOT).child("my_photo")
+        if (mPhotoSelectedUri != null) {
+            storageReference.putFile(mPhotoSelectedUri!!)
+                .addOnProgressListener {
+                    val progress = (100 * it.bytesTransferred/it.totalByteCount).toDouble()//bytes transferidos con respecto al total
+                    mBinding.progressBar.progress = progress.toInt()
+                    mBinding.tvMessage.text = "$progress%"
+                }
+                .addOnCompleteListener {
+                    mBinding.progressBar.visibility = View.INVISIBLE
+                }
+                    //si el progresso ha sido exitoso
+                .addOnSuccessListener {
+                    Snackbar.make(mBinding.root, "Instantánea publicada.",
+                        Snackbar.LENGTH_SHORT).show()
+                }
+                    //si fracasa la subida
+                .addOnFailureListener {
+                    Snackbar.make(mBinding.root, "No se pudo subir, intente mas tarde.",
+                        Snackbar.LENGTH_SHORT).show()
+                }
+        }
 
     }
 
