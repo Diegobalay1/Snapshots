@@ -1,16 +1,29 @@
 package com.diego.kotlin.snapshots
 
+import android.app.Activity
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.diego.kotlin.snapshots.databinding.ActivityMainBinding
+import com.firebase.ui.auth.AuthUI
+import com.google.firebase.auth.FirebaseAuth
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
+
+    private val RC_SIGN_IN = 21
+
     private lateinit var mBinding: ActivityMainBinding
 
     private lateinit var mActiveFragment: Fragment
     private lateinit var mFragmentManager: FragmentManager
+
+    private lateinit var mAuthListener: FirebaseAuth.AuthStateListener
+    private var mFirebaseAuth: FirebaseAuth? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -18,7 +31,33 @@ class MainActivity : AppCompatActivity() {
         val view = mBinding.root
         setContentView(view)
 
+        setupAuth()
         setupBottomNav()
+    }
+
+    private fun setupAuth() {
+        mFirebaseAuth = FirebaseAuth.getInstance()
+        mAuthListener = FirebaseAuth.AuthStateListener {
+            val user = it.currentUser
+            if (user == null){
+                loginUser()
+            }
+        }
+    }
+
+    private fun loginUser() {
+        val intentLogin = Intent(AuthUI.getInstance().createSignInIntentBuilder()
+            .setAvailableProviders(
+                Arrays.asList(AuthUI.IdpConfig.EmailBuilder().build(),//con correo y contraseña
+                              AuthUI.IdpConfig.GoogleBuilder().build())//con la red social de Google
+            )
+            .build())
+        getContent.launch(intentLogin)
+    }
+    private val getContent = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        if (it.resultCode == Activity.RESULT_OK) {
+
+        }
     }
 
     private fun setupBottomNav() {
@@ -63,6 +102,16 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mFirebaseAuth?.addAuthStateListener(mAuthListener)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        mFirebaseAuth?.removeAuthStateListener(mAuthListener)
     }
 
 }
