@@ -49,6 +49,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun loginUser() {
         val intentLogin = Intent(AuthUI.getInstance().createSignInIntentBuilder()
+            .setIsSmartLockEnabled(false)
             .setAvailableProviders(
                 Arrays.asList(AuthUI.IdpConfig.EmailBuilder().build(),//con correo y contraseña
                               AuthUI.IdpConfig.GoogleBuilder().build())//con la red social de Google
