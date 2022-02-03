@@ -45,4 +45,16 @@ class ProfileFragment : Fragment() {
         }
     }
 
+    override fun onStop() {
+        super.onStop()
+        mBinding.tvName.text = ""
+        mBinding.tvEmail.text = ""
+    }
+
+    override fun onStart() {
+        super.onStart()
+        mBinding.tvName.text = FirebaseAuth.getInstance().currentUser?.displayName
+        mBinding.tvEmail.text = FirebaseAuth.getInstance().currentUser?.email
+    }
+
 }
