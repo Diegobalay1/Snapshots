@@ -103,11 +103,22 @@ class HomeFragment : Fragment() {
         mFirebaseAdapter.notifyDataSetChanged()
     }
 
+    private fun deleteSnapshot(snapshot: Snapshot) {
+        val databaseReference = FirebaseDatabase.getInstance("https://snapshots-bfd2a-default-rtdb.europe-west1.firebasedatabase.app")
+            .reference.child("snapshots")
+        databaseReference.child(snapshot.id).removeValue()
+    }
+
+    private fun setLike(snapshot: Snapshot, checked: Boolean) {
+
+    }
+
     inner class SnapshotHolder(view: View) : RecyclerView.ViewHolder(view) {
         val binding = ItemSnapshotBinding.bind(view)
 
         fun setListener(snapshot: Snapshot){
-
+            snapshot.id = 1.toString()
+            binding.btnDelete.setOnClickListener { deleteSnapshot(snapshot) }
         }
     }
 
