@@ -21,7 +21,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 
 
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment() , HomeAux {
 
     private lateinit var mBinding: FragmentHomeBinding
 
@@ -110,6 +110,10 @@ class HomeFragment : Fragment() {
         super.onStop()
         mFirebaseAdapter.stopListening()
         mFirebaseAdapter.notifyDataSetChanged()
+    }
+
+    override fun goToTop() {
+        mBinding.recyclerView.smoothScrollToPosition(0)
     }
 
     private fun deleteSnapshot(snapshot: Snapshot) {
